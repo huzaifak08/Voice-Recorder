@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.recorder_app">
 
-    <user-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
    <application
         android:label="recorder_app"
         android:name="${applicationName}"
