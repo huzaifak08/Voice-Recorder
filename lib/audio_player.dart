@@ -1,15 +1,22 @@
+import 'dart:io';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart' as player;
+import 'package:recorder_app/home.dart';
 
 class AudioPlayer extends StatefulWidget {
-  const AudioPlayer({Key? key}) : super(key: key);
+  AudioPlayer({Key? key, required this.path}) : super(key: key);
 
   @override
-  State<AudioPlayer> createState() => _AudioPlayerState();
+  State<AudioPlayer> createState() => _AudioPlayerState(path: path);
+
+  var path;
 }
 
 class _AudioPlayerState extends State<AudioPlayer> {
+  var path;
+  _AudioPlayerState({required this.path});
   final audioPlayer = player.AudioPlayer();
   bool isPlaying = false;
   Duration duration = Duration.zero;
@@ -43,9 +50,12 @@ class _AudioPlayerState extends State<AudioPlayer> {
   Future setAudio() async {
     audioPlayer.setReleaseMode(ReleaseMode.LOOP);
 
-    final player = AudioCache(prefix: 'assets/');
-    final url = await player.load('song.mp3');
-    audioPlayer.setUrl(url.path, isLocal: true);
+    // final player = AudioCache(prefix: 'assets/');
+    // final url = await player.load('song.mp3');
+    // audioPlayer.setUrl(url.path, isLocal: true);
+
+    final file = File(path);
+    audioPlayer.setUrl(file.path, isLocal: true);
   }
 
   @override
@@ -71,6 +81,16 @@ class _AudioPlayerState extends State<AudioPlayer> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Home(),
+                      ));
+                },
+                icon: Icon(Icons.arrow_back),
+                label: Text('Move Back')),
             ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Image.network(

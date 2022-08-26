@@ -4,6 +4,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
 import 'dart:io';
 
+import 'package:recorder_app/audio_player.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -14,6 +16,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final recorder = FlutterSoundRecorder();
   bool isRecorderReady = false;
+  var path;
 
   @override
   void initState() {
@@ -47,7 +50,7 @@ class _HomeState extends State<Home> {
 
   Future stop() async {
     if (!isRecorderReady) return;
-    final path = await recorder.stopRecorder();
+    path = await recorder.stopRecorder();
     final audioFile = File(path!);
 
     print('Recorder audio: $audioFile');
@@ -66,7 +69,7 @@ class _HomeState extends State<Home> {
                 final duration =
                     snapshot.hasData ? snapshot.data!.duration : Duration.zero;
 
-                String twoDigits(int n) => n.toString().padLeft(4);
+                String twoDigits(int n) => n.toString().padLeft(2, '0');
                 final twoDigitMinutes =
                     twoDigits(duration.inMinutes.remainder(60));
                 final twoDigitSeconds =
@@ -97,6 +100,18 @@ class _HomeState extends State<Home> {
                 size: 80,
               ),
             ),
+            SizedBox(height: 32),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AudioPlayer(
+                          path: path,
+                        ),
+                      ));
+                },
+                child: Text('Listen to the Audio'))
           ],
         ),
       ),
