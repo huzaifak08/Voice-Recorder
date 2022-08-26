@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -101,19 +102,37 @@ class _HomeState extends State<Home> {
               ),
             ),
             SizedBox(height: 32),
-            ElevatedButton(
-                onPressed: () {
+            buidText(),
+            SizedBox(height: 100),
+            // Text(
+            //   'Codefender.com',
+            //   style: TextStyle(color: Colors.black45),
+            // )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buidText() {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+              text: 'Listen to your recorded voice ',
+              style: TextStyle(color: Colors.black45)),
+          TextSpan(
+              text: 'Click Here',
+              style: TextStyle(color: Colors.blue),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AudioPlayer(
-                          path: path,
-                        ),
+                        builder: (context) => AudioPlayer(path: path),
                       ));
-                },
-                child: Text('Listen to the Audio'))
-          ],
-        ),
+                }),
+        ],
       ),
     );
   }
