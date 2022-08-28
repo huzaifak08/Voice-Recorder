@@ -60,9 +60,10 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.only(top: 80, left: 5, right: 5),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             StreamBuilder<RecordingDisposition>(
               stream: recorder.onProgress,
@@ -97,17 +98,48 @@ class _HomeState extends State<Home> {
                 setState(() {});
               },
               child: Icon(
-                recorder.isRecording ? Icons.stop : Icons.mic,
+                recorder.isRecording ? Icons.stop : Icons.play_arrow,
                 size: 80,
+                color: Colors.black,
+              ),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(35)),
+                // onPrimary: Colors.red,
               ),
             ),
             SizedBox(height: 32),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    recorder.isRecording;
+                    Icon(Icons.music_off);
+                  },
+                  icon: Icon(
+                    Icons.music_note,
+                    size: 50,
+                  ),
+                ),
+                SizedBox(width: 45),
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.settings,
+                    size: 50,
+                  ),
+                )
+              ],
+            ),
+            SizedBox(height: 32),
             buidText(),
-            SizedBox(height: 100),
-            // Text(
-            //   'Codefender.com',
-            //   style: TextStyle(color: Colors.black45),
-            // )
+            SizedBox(height: 20),
+            Container(
+              color: Colors.red,
+              height: 370,
+              child: ListView(),
+            ),
           ],
         ),
       ),
