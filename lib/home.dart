@@ -14,7 +14,10 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with TickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation _animation;
+
   final recorder = FlutterSoundRecorder();
   bool isRecorderReady = false;
   var path;
@@ -24,6 +27,15 @@ class _HomeState extends State<Home> {
     super.initState();
 
     initRecorder();
+
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 2));
+    _animationController.repeat(reverse: true);
+    _animation = Tween(begin: 2.0, end: 15.0).animate(_animationController)
+      ..addListener(() {
+        setState(() {});
+      });
+    super.initState();
   }
 
   @override
@@ -87,25 +99,40 @@ class _HomeState extends State<Home> {
               },
             ),
             SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () async {
-                if (recorder.isRecording) {
-                  await stop();
-                } else {
-                  await record();
-                }
-
-                setState(() {});
-              },
-              child: Icon(
-                recorder.isRecording ? Icons.stop : Icons.play_arrow,
-                size: 80,
-                color: Colors.black,
+            Container(
+              height: 100,
+              width: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color.fromARGB(255, 27, 28, 30),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.red,
+                    blurRadius: _animation.value,
+                    spreadRadius: _animation.value,
+                  )
+                ],
               ),
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(35)),
-                // onPrimary: Colors.red,
+              child: ElevatedButton(
+                onPressed: () async {
+                  if (recorder.isRecording) {
+                    await stop();
+                  } else {
+                    await record();
+                  }
+
+                  setState(() {});
+                },
+                child: Icon(
+                  recorder.isRecording ? Icons.stop : Icons.play_arrow,
+                  size: 80,
+                  color: Colors.black,
+                ),
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(35)),
+                  primary: Colors.red,
+                ),
               ),
             ),
             SizedBox(height: 32),
@@ -137,7 +164,7 @@ class _HomeState extends State<Home> {
             SizedBox(height: 20),
             Container(
               color: Colors.red,
-              height: 370,
+              height: 320,
               child: ListView(),
             ),
           ],
