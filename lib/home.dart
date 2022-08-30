@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -17,6 +18,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation _animation;
+  var voice;
+  List<String>? voiceList;
 
   final recorder = FlutterSoundRecorder();
   bool isRecorderReady = false;
@@ -35,6 +38,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       ..addListener(() {
         setState(() {});
       });
+
+    getData();
     super.initState();
   }
 
@@ -65,8 +70,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     if (!isRecorderReady) return;
     path = await recorder.stopRecorder();
     final audioFile = File(path!);
+    voiceList?.add(path);
 
     print('Recorder audio: $audioFile');
+
+    setData(path);
   }
 
   @override
@@ -121,11 +129,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     await record();
                   }
 
+                  setData(path.toString());
+
                   setState(() {});
                 },
                 child: Icon(
                   recorder.isRecording ? Icons.stop : Icons.play_arrow,
-                  size: 80,
+                  size: 70,
                   color: Colors.black,
                 ),
                 style: ElevatedButton.styleFrom(
@@ -163,9 +173,17 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             buidText(),
             SizedBox(height: 20),
             Container(
-              color: Colors.red,
+              color: Color.fromARGB(96, 201, 146, 146),
               height: 320,
-              child: ListView(),
+              child: ListView.builder(
+                itemCount: voiceList?.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(voice.toString()),
+                    subtitle: Text('music'),
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -194,5 +212,15 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         ],
       ),
     );
+  }
+
+  Future<void> setData(voice) async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setStringList('voiceData', voiceList!);
+  }
+
+  void getData() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    voiceList = pref.getStringList('voiceData');
   }
 }
